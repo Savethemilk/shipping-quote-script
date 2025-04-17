@@ -37,21 +37,20 @@ def quote():
     shipstation_url = "https://ssapi.shipstation.com/rates/shipments"
 
     # Build ShipStation request
-    shipment_data = {
-        "carrierCode": "ups",
-        "serviceCode": shipping_speed,
-        "packageCode": "package",
-        "fromPostalCode": from_zip,
-        "toState": "",
-        "toCountry": "US",
-        "toPostalCode": to_zip,
-        "weight": {
-            "value": estimated_weight,
-            "units": "pounds"
-        },
-        "confirmation": "none",
-        "residential": True
-    }
+   shipment_data = {
+    "carrierCode": "ups",
+    "serviceCode": "ups_next_day_air",
+    "packageCode": "package",
+    "fromPostalCode": from_zip,
+    "toPostalCode": to_zip,
+    "toCountry": "US",
+    "weight": {
+        "value": estimated_weight,
+        "units": "pounds"
+    },
+    "confirmation": "none",
+    "residential": True
+}
 
     response = requests.post(
         shipstation_url,
