@@ -75,7 +75,8 @@ def quote():
         )
 
         if response.status_code != 200:
-            return None, "Error from ShipStation: " + response.text
+    print("❌ ShipStation Error:", response.status_code, response.text)
+    return None, "Error from ShipStation: " + response.text
 
         rates = response.json().get("rateResponse", {}).get("rates", [])
         if not rates:
