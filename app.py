@@ -37,20 +37,20 @@ def quote():
     shipstation_url = "https://ssapi.shipstation.com/rates/shipments"
 
     # Build ShipStation request
-   shipment_data = {
-    "carrierCode": "ups",
-    "serviceCode": "ups_next_day_air",
-    "packageCode": "package",
-    "fromPostalCode": from_zip,
-    "toPostalCode": to_zip,
-    "toCountry": "US",
-    "weight": {
-        "value": estimated_weight,
-        "units": "pounds"
-    },
-    "confirmation": "none",
-    "residential": True
-}
+    shipment_data = {
+        "carrierCode": "ups",
+        "serviceCode": "ups_next_day_air",
+        "packageCode": "package",
+        "fromPostalCode": from_zip,
+        "toPostalCode": to_zip,
+        "toCountry": "US",
+        "weight": {
+            "value": estimated_weight,
+            "units": "pounds"
+        },
+        "confirmation": "none",
+        "residential": True
+    }
 
     response = requests.post(
         shipstation_url,
@@ -71,26 +71,36 @@ def quote():
 
     # Compose quote message
     quote_msg = f"""
-Hi there 👋
+Hey there!
 
-Here’s your Save The Milk shipping quote:
+Thanks for reaching out — you’re doing something amazing, and I’m here to help make this process smooth and stress-free.
 
-📦 From ZIP: {from_zip}  
-📬 To ZIP: {to_zip}  
-🍼 Estimated Ounces: {ounces}  
-⚖️ Estimated Weight: {estimated_weight} lb  
-🚚 Shipping Service: {shipping_speed.replace('_', ' ').title()}  
+Based on what you shared, here’s your custom quote:
+
+📍 From ZIP: {from_zip}  
+📦 To ZIP: {to_zip}  
+🍼 Milk Volume: {ounces} oz  
+⚖️ Estimated Weight: {estimated_weight} lbs  
+🚚 Shipping Speed: {shipping_speed.replace('_', ' ').title()}  
 💰 Shipping Cost: ${shipping_cost:.2f}  
 📦 Kit Cost: ${kit_cost:.2f}  
-🔁 Return Label: ${return_label_cost:.2f}  
-----------------------------------
-💸 **Total Estimate: ${total:.2f}**
+🔁 Return Label: ${return_label_cost:.2f}
 
-✅ Best days to ship: Monday–Wednesday  
-📄 [Read the Shipping Disclaimer](https://savethemilk.com/disclaimer.pdf)
+----------------------------------------
+💰 **Estimated Total: ${total:.2f}**
+----------------------------------------
 
-If you’d like to move forward, reply to this email and we’ll get everything ready 💛  
-– Crystal @ Save The Milk
+✅ I recommend shipping Monday–Wednesday to avoid weekend delays.  
+📄 Please review the Shipping Disclaimer: https://savethemilk.com/disclaimer.pdf
+
+When you're ready, just reply to this email and I’ll send the next steps — whether it’s ordering the kit, sending the label, or answering any questions.
+
+You've got this 💪 — and I’ve got your back!
+
+Warmly,  
+Crystal  
+Save The Milk  
+crystal@savethemilk.com
 """
 
     # Email sending
