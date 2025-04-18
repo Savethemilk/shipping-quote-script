@@ -50,7 +50,7 @@ def quote():
         api_secret = os.environ.get("SHIPSTATION_API_SECRET")
 
         shipment = {
-            "carrierCode": "",  # left blank to return all
+            "carrierCode": "",  # leave blank to get all
             "fromPostalCode": from_zip,
             "toPostalCode": to_zip,
             "toCountry": "US",
@@ -75,8 +75,8 @@ def quote():
         )
 
         if response.status_code != 200:
-    print("❌ ShipStation Error:", response.status_code, response.text)
-    return None, "Error from ShipStation: " + response.text
+            print("❌ ShipStation Error:", response.status_code, response.text)
+            return None, "Error from ShipStation: " + response.text
 
         rates = response.json().get("rateResponse", {}).get("rates", [])
         if not rates:
@@ -134,7 +134,6 @@ Thanks for reaching out — here’s your custom shipping quote for a Tiny Kit. 
 
 💰 **Overnight Shipping Options**:
 {chr(10).join(quote_lines)}
-
 """
 
     if need_return_label:
