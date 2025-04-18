@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def home():
-    return "✅ Save The Milk quote server is running with ShipEngine!"
+    return "✅ Save The Milk quote server is running with markup logic!"
 
 @app.route("/", methods=["POST"])
 def quote():
@@ -40,9 +40,10 @@ def quote():
         "API-Key": api_key
     }
 
+    # ShipEngine request payload for UPS only
     payload = {
         "rate_options": {
-            "carrier_ids": [],  # Leave blank to pull all available
+            "carrier_ids": ["se-2347705"],  # Your UPS carrier ID
             "ship_date": datetime.today().strftime('%Y-%m-%d')
         },
         "shipment": {
@@ -91,31 +92,41 @@ def quote():
     for rate in rates:
         carrier = rate["carrier_friendly_name"]
         service = rate["service_code"]
-        cost = rate["shipping_amount"]["amount"]
-        quote_lines.append(f"{carrier} {service}: ${cost:.2f}")
+        base_cost = rate["shipping_amount"]["amount"]
 
-    # Build email
+        # Markup logic
+        markup = 0
+        if "next_day" in service.lower() or "overnight" in service.lower():
+            markup = 50
+        elif "2nd_day" in service.lower() or "two_day" in service.lower():
+            markup = 45
+
+        customer_cost = round(base_cost + markup, 2)
+        quote_lines.append(f"{carrier} {service}: ${customer_cost:.2f}")
+
+    # Build the email
     email_user = os.environ.get("EMAIL_USER")
     email_pass = os.environ.get("EMAIL_PASS")
     send_from_name = os.environ.get("SEND_FROM_NAME")
 
     quote_body = f"""
-Hey there!
+Hey there! 🍼
 
-Here’s your custom shipping quote for a Tiny Kit. (We always ship this kit overnight.)
+Here’s your custom shipping quote for a Tiny Kit.
 
-🍼 Milk Volume: {ounces} oz  
-📦 Estimated Weight: {weight} lbs  
-📍 From ZIP: {from_zip}  
-📬 To ZIP: {to_zip}
+📦 From ZIP: {from_zip}  
+📬 To ZIP: {to_zip}  
+🍼 Estimated Volume: {ounces} oz  
+⚖️ Estimated Weight: {weight} lbs
 
-💰 **Shipping Options**:
+💰 **Overnight Shipping Options (UPS)**:
 {chr(10).join(quote_lines)}
 
-🗓️ Best days to ship: Monday–Wednesday  
-📄 Disclaimer: https://savethemilk.com/disclaimer.pdf
+🗓️ Best shipping days: Monday–Wednesday  
+📄 Please review our disclaimer:  
+👉 https://savethemilk.com/disclaimer.pdf
 
-Just reply to this email to pick a label and I’ll get it all set 💛  
+Just reply to this email to choose a label 💛  
 – Crystal @ Save The Milk
 """
 
