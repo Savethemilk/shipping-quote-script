@@ -45,7 +45,7 @@ def quote():
 
     # Build API request to ShipStation
     def get_quote(weight, service_filter):
-        shipstation_url = "http://ssapi14-internal.shipstation.com:8060/rates/shipments"
+        shipstation_url = "https://ssapi.shipstation.com/rates/shipments"
         api_key = os.environ.get("SHIPSTATION_API_KEY")
         api_secret = os.environ.get("SHIPSTATION_API_SECRET")
 
