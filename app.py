@@ -1,31 +1,29 @@
 from flask import Flask, request, jsonify
 import requests
-import os
 
 app = Flask(__name__)
 
-# Use environment variable or hardcoded API key (for now)
-SHIPENGINE_API_KEY = os.getenv("92f3aIClE0e/4KxBgycNHvBReKr0XbruLuwwIVjRaOs") or "92f3aIClE0e/4KxBgycNHvBReKr0XbruLuwwIVjRaOs"
+# Your actual ShipEngine API Key
+SHIPENGINE_API_KEY = "92f3aIClE0e/4KxBgycNHvBReKr0XbruLuwwIVjRaOs"
 
 @app.route("/")
-def index():
-    return "Shipping quote API is running"
+def home():
+    return "ShipEngine API is live."
 
 @app.route("/get-quote", methods=["POST"])
 def get_quote():
     data = request.json
 
-    # Expecting these fields from the FG form or test tool
     from_zip = data.get("from_zip")
     to_zip = data.get("to_zip")
-    weight_oz = data.get("weight")  # weight in ounces
+    weight_oz = data.get("weight")
 
-    if not from_zip or not to_zip or not weight_oz:
-        return jsonify({"error": "Missing required fields"}), 400
+    if not all([from_zip, to_zip, weight_oz]):
+        return jsonify({"error": "Missing one or more required fields: from_zip, to_zip, weight"}), 400
 
     payload = {
         "rate_options": {
-            "carrier_ids": [],  # Leave empty to use default carriers
+            "carrier_ids": []
         },
         "shipment": {
             "validate_address": "no_validation",
@@ -50,17 +48,13 @@ def get_quote():
 
     headers = {
         "Content-Type": "application/json",
-        "API-Key": 92f3aIClE0e/4KxBgycNHvBReKr0XbruLuwwIVjRaOs
+        "API-Key": SHIPENGINE_API_KEY
     }
 
-    response = requests.post(
-        "https://api.shipengine.com/v1/rates/estimate",
-        json=payload,
-        headers=headers
-    )
+    response = requests.post("https://api.shipengine.com/v1/rates/estimate", json=payload, headers=headers)
 
     if response.status_code != 200:
-        return jsonify({"error": "Failed to get rates", "details": response.json()}), response.status_code
+        return jsonify({"error": "ShipEngine API request failed", "details": response.json()}), response.status_code
 
     return jsonify(response.json())
 
