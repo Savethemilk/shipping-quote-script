@@ -14,12 +14,12 @@ def home():
 def get_quote():
     data = request.json
 
-    from_zip = data.get("from_zip")
-    to_zip = data.get("to_zip")
-    weight_oz = data.get("weight")
+    contact.from_zip_code = data.get("contact.from_zip_code")
+    contact.to_zip_code = data.get("contact.to_zip_code")
+    contact.how_many_ounces = data.get("contact.how_many_ounces")
 
-    if not all([from_zip, to_zip, weight_oz]):
-        return jsonify({"error": "Missing one or more required fields: from_zip, to_zip, weight"}), 400
+    if not all([ontact.from_zip_code, contact.to_zip_code, contact.how_many_ounces]):
+        return jsonify({"error": "Missing one or more required fields: contact.from_zip_code, contact.to_zip_code, contact.how_many_ounces"}), 400
 
     payload = {
         "rate_options": {
@@ -28,17 +28,17 @@ def get_quote():
         "shipment": {
             "validate_address": "no_validation",
             "ship_from": {
-                "postal_code": from_zip,
+                "postal_code": contact.from_zip_code,
                 "country_code": "US"
             },
             "ship_to": {
-                "postal_code": to_zip,
+                "postal_code": contact.to_zip_code,
                 "country_code": "US"
             },
             "packages": [
                 {
-                    "weight": {
-                        "value": weight_oz,
+                    "contact.how_many_ounces": {
+                        "value": contact.how_many_ounces,
                         "unit": "ounce"
                     }
                 }
