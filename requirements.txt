@@ -1,3 +1,6 @@
-Flask
-gunicorn
+flask
 requests
+gunicorn
+python-dotenv
+pytz               # For timezone handling
+certifi            # For SSL support in requests
