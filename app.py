@@ -16,9 +16,10 @@ def get_quote():
     print("FULL PAYLOAD:", data)
 
     # ✅ Required fields
-    from_zip = data.get("contact.sender_zip_code")
-    to_zip = data.get("contact.receiver_zip_code")
-    weight = data.get("contact.enter_ounces")
+   custom = data.get("customData", {})
+from_zip = custom.get("Sender Zip Code")
+to_zip = custom.get("Receiver Zip Code")
+weight = custom.get("Enter The Amount of Ounces")
 
     if not from_zip or not to_zip or not weight:
         return jsonify({"error": "Missing required fields"}), 400
